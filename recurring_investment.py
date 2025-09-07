@@ -99,14 +99,9 @@ def main():
         compounding_type = CompoundingType.YEARLY,
         investment_type = InvestmentType.YEARLY
     )
-    bulk_investment = BulkInvestment(
-        amount = 1_00_000,
-        avg_growth_rate = 12,
-        investment_year = 2025
-    )
-    
+
     for year in range(2025, 2055):
-        log.info(f"Amount at Year {year}'s end: {recurring_investment.calculate_amount(year)} vs {bulk_investment.calculate_amount(year)}")
+        log.info(f"Amount at Year {year}'s end: {recurring_investment.calculate_amount(year)}")
 
 
 if __name__ == "__main__":
