@@ -13,6 +13,7 @@ class RetirementWithdrawal(BaseModel):
     expected_life_span: int = Field(..., description="Expected life span in terms of age")
 
     inflation_rate: float = Field(..., description="Average inflation rate in percentage")
+    post_retirement_return_rate: float = Field(default=0.0, description="Expected annual return rate on remaining corpus during retirement (default: 0% for conservative estimate)")
     yearly_withdrawal: float = Field(..., description="The yearly withdrawal amount with respect to current year")
 
     def __init__(self, **kwargs):
@@ -62,6 +63,9 @@ class RetirementWithdrawal(BaseModel):
         
         if self.inflation_rate < -10 or self.inflation_rate > 50:
             raise ValueError(f"Inflation rate {self.inflation_rate}% must be between -10% and 50%")
+        
+        if self.post_retirement_return_rate < -10 or self.post_retirement_return_rate > 30:
+            raise ValueError(f"Post-retirement return rate {self.post_retirement_return_rate}% must be between -10% and 30%")
 
         # Logical sustainability validations
         years_in_retirement = self.expected_life_span - retirement_age
@@ -102,7 +106,7 @@ class RetirementWithdrawal(BaseModel):
         # Simulate each year from retirement to target year
         for current_retirement_year in range(self.retirement_year, target_year + 1):
             """
-            Period's start: Remove the amount to spend this year
+            Beginning of year: Remove the amount to spend this year
             """
             remaining_corpus = remaining_corpus - amount_to_spend
             
@@ -110,7 +114,12 @@ class RetirementWithdrawal(BaseModel):
                 raise ValueError(f"Corpus depleted in year {current_retirement_year}. Remaining corpus became negative: ₹{remaining_corpus:,.2f}")
 
             """
-            Period's end: Increase spending amount for next year due to inflation
+            During the year: Apply post-retirement investment returns to remaining corpus
+            """
+            remaining_corpus = remaining_corpus * (1 + self.post_retirement_return_rate/100)
+
+            """
+            End of year: Increase spending amount for next year due to inflation
             """
             amount_to_spend = amount_to_spend * (1 + self.inflation_rate/100)
         
