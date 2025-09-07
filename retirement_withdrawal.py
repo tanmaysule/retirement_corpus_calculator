@@ -79,32 +79,38 @@ class RetirementWithdrawal(BaseModel):
             raise ValueError(f"Withdrawal amount is too high - corpus may not last even 10 years")
 
 
-    def calculate_remaining_corpus(self, year: int):
+    def calculate_remaining_corpus(self, target_year: int):
         """
         Calculate the remaining corpus at the end of the given year.
 
         Args:
-            year: Year for which the remaining corpus is to be calculated
+            target_year: Year for which the remaining corpus is to be calculated
 
         Returns:
             Remaining corpus at the end of the given year
         """
 
-        if year < self.current_year or year < self.retirement_year:
-            raise ValueError(f"Cannot calculate remaining corpus for year {year} before current year {self.current_year} or retirement year {self.retirement_year}")
+        # Validation: Can only calculate for years during or after retirement
+        if target_year < self.retirement_year:
+            raise ValueError(f"Cannot calculate remaining corpus for year {target_year} before retirement year {self.retirement_year}")
         
         remaining_corpus = self.retirement_corpus
+        
+        # Calculate the withdrawal amount for the first retirement year (adjusted for inflation from current year)
         amount_to_spend = self.yearly_withdrawal * (1 + self.inflation_rate/100) ** (self.retirement_year - self.current_year)
-        for year in range(self.retirement_year, year + 1):
+        
+        # Simulate each year from retirement to target year
+        for current_retirement_year in range(self.retirement_year, target_year + 1):
             """
             Period's start: Remove the amount to spend this year
             """
             remaining_corpus = remaining_corpus - amount_to_spend
-            if(remaining_corpus < 0):
-                raise ValueError(f"Remaining corpus cannot be negative for year {year}")
+            
+            if remaining_corpus < 0:
+                raise ValueError(f"Corpus depleted in year {current_retirement_year}. Remaining corpus became negative: ₹{remaining_corpus:,.2f}")
 
             """
-            Period's end: Add the inflation for this period
+            Period's end: Increase spending amount for next year due to inflation
             """
             amount_to_spend = amount_to_spend * (1 + self.inflation_rate/100)
         
