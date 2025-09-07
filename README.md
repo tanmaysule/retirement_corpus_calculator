@@ -4,7 +4,7 @@ A beautiful, interactive web application to calculate and visualize retirement i
 
 ![Python](https://img.shields.io/badge/python-3.13-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-green.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
 
 ## ✨ Features
 
@@ -109,7 +109,20 @@ retirement_corpus_calculator/
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
+
+**You are free to:**
+- ✅ **Use** for personal, educational, and non-commercial purposes
+- ✅ **Share** and redistribute the material
+- ✅ **Adapt** and build upon the material
+
+**Under these conditions:**
+- 📝 **Attribution** - You must give appropriate credit
+- 🚫 **NonCommercial** - You may not use the material for commercial purposes
+
+For commercial use, please contact the author.
+
+See the [LICENSE](LICENSE) file for full details or visit [Creative Commons](https://creativecommons.org/licenses/by-nc/4.0/).
 
 ## 🙏 Acknowledgments
 
