@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retirement Corpus Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -14,49 +17,22 @@
         <div class="main-content">
             <div class="parameters-row">
                 <div class="input-panel">
-                    <h2>Investment Parameters</h2>
+                    <h2>Investment Models</h2>
                     <form id="calculatorForm">
                         <div class="form-group">
-                            <label for="base_amount">Base Amount (₹)</label>
-                            <input type="number" id="base_amount" value="100000" min="0" step="1000">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="recurring_amount">Recurring Amount (₹)</label>
-                            <input type="number" id="recurring_amount" value="50000" min="0" step="1000">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="step_up_rate">Step Up Rate (%)</label>
-                            <input type="range" id="step_up_rate" min="0" max="20" value="7" step="0.1">
-                            <span id="step_up_display">7.0</span>%
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="avg_growth_rate">Investment Growth Rate (%)</label>
-                            <input type="range" id="avg_growth_rate" min="0" max="20" value="12" step="0.1">
-                            <span id="growth_rate_display">12.0</span>%
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="investment_year">Investment Start Year</label>
+                            <label for="investment_year">Current Year (Investment Start)</label>
                             <input type="number" id="investment_year" value="2025" min="2000" max="2100">
+                            <small class="help-text">The year when you are currently <span id="current_year_age_ref">28</span> years old and starting investments.</small>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="compounding_type">Compounding Type</label>
-                            <select id="compounding_type">
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly" selected>Yearly</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="investment_type">Investment Type</label>
-                            <select id="investment_type">
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
+                        <div class="investment-models-section">
+                            <div class="section-header">
+                                <h3>Your Investment Models</h3>
+                                <button type="button" id="add-investment-btn" class="btn btn-primary">+ Add Investment Model</button>
+                            </div>
+                            <div id="investment-models-container">
+                                <!-- Investment models will be dynamically added here -->
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -65,40 +41,51 @@
                     <h2>Retirement Parameters</h2>
                     <div class="form-group">
                         <label for="current_age">Current Age</label>
-                        <input type="number" id="current_age" value="30" min="18" max="100">
+                        <input type="range" id="current_age" min="18" max="65" value="28" step="1">
+                        <span id="current_age_display">28</span> years
                     </div>
                     
                     <div class="form-group">
-                        <label for="retirement_year">Retirement Year</label>
-                        <input type="number" id="retirement_year" value="2055" min="2025" max="2100">
+                        <label for="retirement_age">Retirement Age</label>
+                        <input type="range" id="retirement_age" min="45" max="85" value="55" step="1">
+                        <span id="retirement_age_display">55</span> years
                     </div>
                     
                     <div class="form-group">
                         <label for="expected_life_span">Expected Life Span</label>
-                        <input type="number" id="expected_life_span" value="80" min="50" max="120">
+                        <input type="range" id="expected_life_span" min="60" max="100" value="84" step="1">
+                        <span id="expected_life_span_display">84</span> years
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="retirement_corpus_manual">Retirement Corpus (₹)</label>
+                        <input type="number" id="retirement_corpus_manual" value="0" min="100000" step="100000" readonly>
+                        <button type="button" id="edit_corpus_btn" class="edit-btn">Edit</button>
+                        <small class="help-text">Auto-calculated from investment parameters. Click 'Edit' to customize.</small>
                     </div>
                     
                     <div class="form-group">
                         <label for="yearly_withdrawal">Yearly Withdrawal (₹)</label>
-                        <input type="number" id="yearly_withdrawal" value="300000" min="10000" step="10000">
+                        <input type="number" id="yearly_withdrawal" value="900000" min="10000" step="10000">
+                        <small class="help-text">Amount in today's purchasing power. Will be automatically adjusted for inflation each year during retirement.</small>
                     </div>
                     
                     <div class="form-group">
                         <label for="inflation_rate">Inflation Rate (%)</label>
-                        <input type="range" id="inflation_rate" min="0" max="15" value="6" step="0.1">
-                        <span id="inflation_display">6.0</span>%
+                        <input type="range" id="inflation_rate" min="0" max="15" value="7.0" step="0.1">
+                        <span id="inflation_display">7.0</span>%
                     </div>
                     
                     <div class="form-group">
                         <label for="post_retirement_return_rate">Post-Retirement Return Rate (%)</label>
-                        <input type="range" id="post_retirement_return_rate" min="0" max="10" value="4" step="0.1">
-                        <span id="post_return_display">4.0</span>%
+                        <input type="range" id="post_retirement_return_rate" min="0" max="10" value="5.5" step="0.1">
+                        <span id="post_return_display">5.5</span>%
                     </div>
                     
                     <div class="form-group">
                         <label for="years_to_display">Years to Display</label>
-                        <input type="range" id="years_to_display" min="20" max="80" value="50" step="1">
-                        <span id="years_display">50</span> years
+                        <input type="range" id="years_to_display" min="20" max="80" value="72" step="1">
+                        <span id="years_display">72</span> years
                     </div>
                 </div>
             </div>
@@ -108,15 +95,22 @@
                 <div class="chart-info">
                     <div class="info-row">
                         <p>Retirement Corpus: <span id="retirement_corpus">₹ 0</span></p>
-                        <p>Retirement Year: <span id="retirement_year_display">2055</span></p>
+                        <p>Retirement Year: <span id="retirement_year_display">2052</span> (Age: <span id="retirement_age_info">55</span>)</p>
+                    </div>
+                    <div class="calculation-info">
+                        <small class="help-text">Retirement Year = Current Year (<span id="current_year_info">2025</span>) + Years Until Retirement (<span id="years_until_retirement">27</span>)</small>
                     </div>
                     <div class="status-message" id="status_message"></div>
                 </div>
-                <canvas id="investmentChart"></canvas>
+                <div id="chartContainer">
+                    <canvas id="investmentChart"></canvas>
+                    <div id="chartError" style="display: none; text-align: center; padding: 50px; color: #dc2626; font-size: 1.2rem;">
+                        ⚠️ Chart failed to load. Please refresh the page.
+                    </div>
+                </div>
                 <div class="chart-legend">
-                    <span class="legend-item"><span class="legend-color investment"></span>Investment Phase</span>
-                    <span class="legend-item"><span class="legend-color retirement"></span>Retirement Phase</span>
-                    <span class="legend-item"><span class="legend-color depleted"></span>Corpus Depleted</span>
+                    <span class="legend-item"><span class="legend-color investment"></span>Investment Phase (Accumulation)</span>
+                    <span class="legend-item"><span class="legend-color retirement"></span>Retirement Phase (Withdrawal)</span>
                 </div>
             </div>
         </div>
@@ -124,148 +118,649 @@
     
     <script>
         let chart;
+        let investmentModelCounter = 0;
+        const investmentModels = new Map(); // Store investment model data
+        
+        // Investment Model Management Functions
+        function generateModelId() {
+            return ++investmentModelCounter;
+        }
+        
+        function addInvestmentModel(data = null, skipCalculation = false) {
+            console.log('➕ Adding investment model. Current count:', investmentModels.size);
+            
+            const modelId = generateModelId();
+            const defaultData = data || {
+                name: `Investment Model ${modelId}`,
+                base_amount: modelId === 1 ? 500000 : 100000,
+                recurring_amount: modelId === 1 ? 60000 : 25000,
+                step_up_rate: 6.0,
+                avg_growth_rate: 11.0,
+                investment_model: 'mom'
+            };
+            
+            console.log(`📝 Creating model ${modelId}: ${defaultData.name}`);
+            
+            // Store the model data
+            investmentModels.set(modelId, defaultData);
+            
+            // Render the model UI
+            renderInvestmentModel(modelId, defaultData);
+            
+            // Update help text after DOM is ready - with more debugging
+            setTimeout(() => {
+                console.log(`🔄 Updating help text for model ${modelId} with type ${defaultData.investment_model}`);
+                console.log('DOM container innerHTML:', container.innerHTML);
+                updateInvestmentAmountHelp(modelId, defaultData.investment_model);
+                
+                // Double-check that the help text was set
+                const helpTextEl = document.getElementById(`help_text_${modelId}`);
+                console.log('Help text element after update:', helpTextEl);
+                console.log('Help text content after update:', helpTextEl ? helpTextEl.textContent : 'NOT FOUND');
+            }, 300);
+            
+            // Disable add button if we hit the limit
+            if (investmentModels.size >= 10) {
+                const addBtn = document.getElementById('add-investment-btn');
+                if (addBtn) {
+                    addBtn.disabled = true;
+                    console.log('🚫 Add button disabled - reached 10 model limit');
+                }
+            }
+            
+            console.log(`✅ Model ${modelId} added. Total models: ${investmentModels.size}`);
+            
+            // Trigger calculation if not skipped
+            if (!skipCalculation) {
+                setTimeout(() => calculateAndUpdate(), 100);
+            }
+        }
+        
+        function removeInvestmentModel(modelId) {
+            console.log(`🗑️ Removing investment model ${modelId}`);
+            
+            if (investmentModels.size <= 1) {
+                alert('You must have at least one investment model.');
+                return;
+            }
+            
+            // Remove from data structure
+            investmentModels.delete(modelId);
+            
+            // Remove from DOM
+            const modelElement = document.getElementById(`investment-model-${modelId}`);
+            if (modelElement) {
+                modelElement.remove();
+                console.log(`✅ Model ${modelId} removed from DOM`);
+            }
+            
+            // Re-enable add button if we were at the limit
+            const addBtn = document.getElementById('add-investment-btn');
+            if (addBtn) {
+                addBtn.disabled = false;
+                console.log('✅ Add button re-enabled');
+            }
+            
+            console.log(`✅ Model ${modelId} removed. Total models: ${investmentModels.size}`);
+            
+            // Recalculate
+            calculateAndUpdate();
+        }
+        
+        function renderInvestmentModel(modelId, data) {
+            console.log(`🎨 Rendering investment model ${modelId}`);
+            
+            const container = document.getElementById('investment-models-container');
+            if (!container) {
+                console.error('❌ Investment models container not found!');
+                return;
+            }
+            
+            const modelHtml = `
+                <div class="investment-model-card" id="investment-model-${modelId}">
+                    <div class="investment-model-header">
+                        <input type="text" value="${data.name}" class="model-name-input investment-model-title" 
+                               onchange="updateModelName(${modelId}, this.value)">
+                        <button type="button" class="btn btn-danger" onclick="removeInvestmentModel(${modelId})">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="investment-model-form">
+                        <div class="form-group">
+                            <label for="base_amount_${modelId}">Base Amount (₹)</label>
+                            <input type="number" id="base_amount_${modelId}" value="${data.base_amount}" 
+                                   min="0" step="1000" onchange="updateModelData(${modelId})">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="recurring_amount_${modelId}">Monthly Investment (₹)</label>
+                            <input type="number" id="recurring_amount_${modelId}" value="${data.recurring_amount}" 
+                                   min="0" step="1000" onchange="updateModelData(${modelId})">
+                            <small class="help-text" id="recurring_help_${modelId}">For MoM: Invested every month. For YoY/YoM: Monthly amount × 12 invested once per year.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="step_up_rate_${modelId}">Step Up Rate (%)</label>
+                            <input type="range" id="step_up_rate_${modelId}" min="0" max="20" value="${data.step_up_rate}" 
+                                   step="0.1" oninput="updateSliderDisplay(${modelId}, 'step_up')" onchange="updateModelData(${modelId})">
+                            <span id="step_up_display_${modelId}">${data.step_up_rate}</span>%
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="avg_growth_rate_${modelId}">Growth Rate (%)</label>
+                            <input type="range" id="avg_growth_rate_${modelId}" min="0" max="20" value="${data.avg_growth_rate}" 
+                                   step="0.1" oninput="updateSliderDisplay(${modelId}, 'avg_growth')" onchange="updateModelData(${modelId})">
+                            <span id="avg_growth_display_${modelId}">${data.avg_growth_rate}</span>%
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="investment_model_${modelId}">Investment Model</label>
+                            <select id="investment_model_${modelId}" onchange="updateModelData(${modelId}); updateInvestmentAmountHelp(${modelId}, this.value)">
+                                <option value="mom" ${data.investment_model === 'mom' ? 'selected' : ''}>MoM - Monthly Investment, Monthly Compounding</option>
+                                <option value="yoy" ${data.investment_model === 'yoy' ? 'selected' : ''}>YoY - Yearly Investment, Yearly Compounding</option>
+                                <option value="yom" ${data.investment_model === 'yom' ? 'selected' : ''}>YoM - Yearly Investment, Monthly Compounding</option>
+                            </select>
+                            <small class="help-text" id="help_text_${modelId}">
+                                ${data.investment_model === 'mom' 
+                                    ? 'Amount invested every month with monthly compounding.' 
+                                    : data.investment_model === 'yoy' 
+                                        ? 'Monthly amount × 12 invested once per year with yearly compounding.' 
+                                        : 'Monthly amount × 12 invested once per year with monthly compounding.'}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', modelHtml);
+            console.log(`✅ HTML inserted for model ${modelId}`);
+        }
+        
+        function updateModelName(modelId, newName) {
+            console.log('🏷️ updateModelName called:', modelId, newName);
+            const model = investmentModels.get(modelId);
+            if (model) {
+                console.log('📝 Old name:', model.name, '-> New name:', newName);
+                model.name = newName;
+                investmentModels.set(modelId, model);
+                console.log('✅ Model name updated, triggering chart update...');
+                // Trigger chart update to refresh legend with new name
+                calculateAndUpdate();
+            } else {
+                console.error('❌ Model not found for ID:', modelId);
+            }
+        }
+        
+        function updateModelData(modelId) {
+            const model = investmentModels.get(modelId);
+            if (!model) {
+                console.error('❌ Model not found for ID:', modelId);
+                return;
+            }
+            
+            // Safely get DOM elements with null checks
+            const baseAmountEl = document.getElementById(`base_amount_${modelId}`);
+            const recurringAmountEl = document.getElementById(`recurring_amount_${modelId}`);
+            const stepUpRateEl = document.getElementById(`step_up_rate_${modelId}`);
+            const avgGrowthRateEl = document.getElementById(`avg_growth_rate_${modelId}`);
+            const investmentModelEl = document.getElementById(`investment_model_${modelId}`);
+            
+            // Check if all elements exist
+            if (!baseAmountEl || !recurringAmountEl || !stepUpRateEl || !avgGrowthRateEl || !investmentModelEl) {
+                console.error(`❌ Some form elements not found for model ${modelId}`);
+                console.error('Missing elements:', {
+                    base_amount: !baseAmountEl,
+                    recurring_amount: !recurringAmountEl,
+                    step_up_rate: !stepUpRateEl,
+                    avg_growth_rate: !avgGrowthRateEl,
+                    investment_model: !investmentModelEl
+                });
+                return;
+            }
+            
+            // Update model data safely
+            model.base_amount = parseFloat(baseAmountEl.value) || 0;
+            model.recurring_amount = parseFloat(recurringAmountEl.value) || 0;
+            model.step_up_rate = parseFloat(stepUpRateEl.value) || 0;
+            model.avg_growth_rate = parseFloat(avgGrowthRateEl.value) || 0;
+            model.investment_model = investmentModelEl.value;
+            
+            console.log('✅ Updated model data for ID', modelId, ':', model);
+            investmentModels.set(modelId, model);
+            calculateAndUpdate();
+        }
+        
+        function updateSliderDisplay(modelId, sliderType) {
+            const sliderElement = document.getElementById(`${sliderType}_rate_${modelId}`);
+            const displayElement = document.getElementById(`${sliderType}_display_${modelId}`);
+            
+            if (!sliderElement) {
+                console.error(`❌ Slider element not found: ${sliderType}_rate_${modelId}`);
+                return;
+            }
+            
+            if (!displayElement) {
+                console.error(`❌ Display element not found: ${sliderType}_display_${modelId}`);
+                return;
+            }
+            
+            const value = sliderElement.value;
+            displayElement.textContent = parseFloat(value).toFixed(1);
+        }
+        
+        function updateInvestmentAmountHelp(modelId, modelType) {
+            console.log(`🔧 updateInvestmentAmountHelp called for model ${modelId}, type: ${modelType}`);
+            
+            const helpText = document.getElementById(`help_text_${modelId}`);
+            const recurringHelpText = document.getElementById(`recurring_help_${modelId}`);
+            
+            console.log('Help text element:', helpText);
+            console.log('Recurring help text element:', recurringHelpText);
+            
+            if (helpText) {
+                let message = '';
+                if (modelType === 'mom') {
+                    message = 'Amount invested every month with monthly compounding.';
+                } else if (modelType === 'yoy') {
+                    message = 'Monthly amount × 12 invested once per year with yearly compounding.';
+                } else if (modelType === 'yom') {
+                    message = 'Monthly amount × 12 invested once per year with monthly compounding.';
+                }
+                
+                console.log(`Setting help text to: "${message}"`);
+                helpText.textContent = message;
+                console.log(`Help text after setting: "${helpText.textContent}"`);
+            } else {
+                console.warn(`⚠️ Help text element not found for model ${modelId}`);
+            }
+            
+            if (recurringHelpText) {
+                let recurringMessage = '';
+                if (modelType === 'mom') {
+                    recurringMessage = 'For MoM: Invested every month.';
+                } else {
+                    recurringMessage = 'For YoY/YoM: Monthly amount × 12 invested once per year.';
+                }
+                
+                console.log(`Setting recurring help text to: "${recurringMessage}"`);
+                recurringHelpText.textContent = recurringMessage;
+            } else {
+                console.warn(`⚠️ Recurring help text element not found for model ${modelId}`);
+            }
+        }
+        
+        // Setup Add Investment Button function
+        function setupAddInvestmentButton() {
+            console.log('🔘 Setting up Add Investment Button...');
+            
+            const addBtn = document.getElementById('add-investment-btn');
+            console.log('🔍 Button element:', addBtn);
+            
+            if (!addBtn) {
+                console.error('❌ Add investment button not found in DOM!');
+                console.log('All elements with "add" in id:', 
+                    Array.from(document.querySelectorAll('[id*="add"]')).map(el => el.id)
+                );
+                return false;
+            }
+            
+            // Clear any existing event listeners
+            addBtn.onclick = null;
+            
+            // Set up the click handler
+            addBtn.onclick = function(event) {
+                console.log('🎯 Add Investment button clicked!');
+                event.preventDefault();
+                event.stopPropagation();
+                
+                try {
+                    addInvestmentModel();
+                    console.log('✅ New investment model added successfully');
+                } catch (error) {
+                    console.error('❌ Error adding investment model:', error);
+                    alert('Error adding investment model: ' + error.message);
+                }
+                
+                return false;
+            };
+            
+            console.log('✅ Add Investment Button event handler attached');
+            return true;
+        }
+        
+        // Register the annotation plugin (Chart.js annotation plugin registers automatically)
         
         // Initialize chart with multiple datasets for different phases
         function initChart() {
-            const ctx = document.getElementById('investmentChart').getContext('2d');
-            chart = new Chart(ctx, {
+            console.log('Initializing chart...');
+            const canvas = document.getElementById('investmentChart');
+            console.log('Canvas element:', canvas);
+            
+            if (!canvas) {
+                console.error('Canvas element not found!');
+                document.getElementById('chartError').style.display = 'block';
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            console.log('Canvas context:', ctx);
+            
+            if (!ctx) {
+                console.error('Could not get canvas context!');
+                document.getElementById('chartError').style.display = 'block';
+                return;
+            }
+            
+            try {
+                chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: [],
-                    datasets: [
-                        {
-                            label: 'Investment Phase (₹)',
-                            data: [],
-                            borderColor: '#2563eb',
-                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                            tension: 0.1,
-                            fill: true
-                        },
-                        {
-                            label: 'Retirement Phase (₹)',
-                            data: [],
-                            borderColor: '#dc2626',
-                            backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                            tension: 0.1,
-                            fill: false
-                        },
-                        {
-                            label: 'Corpus Depleted',
-                            data: [],
-                            borderColor: '#6b7280',
-                            backgroundColor: 'rgba(107, 114, 128, 0.1)',
-                            tension: 0.1,
-                            fill: false
-                        }
-                    ]
+                    datasets: []  // Will be populated dynamically
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: true,   // Require intersection with actual line
+                            mode: 'point'      // Show only the specific point being hovered
+                        },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Corpus Amount',
+                                font: {
+                                    size: 16,
+                                    weight: '700',
+                                    family: 'Inter, system-ui, sans-serif'
+                                }
+                            },
                             ticks: {
                                 callback: function(value) {
                                     return '₹ ' + (value / 100000).toFixed(1) + 'L';
+                                },
+                                font: {
+                                    size: 13,
+                                    weight: '600',
+                                    family: 'Inter, system-ui, sans-serif'
                                 }
                             }
                         },
                         x: {
                             title: {
                                 display: true,
-                                text: 'Year'
+                                text: 'Year (Age)',
+                                font: {
+                                    size: 16,
+                                    weight: '700',
+                                    family: 'Inter, system-ui, sans-serif'
+                                }
+                            },
+                            ticks: {
+                                callback: function(value, index) {
+                                    const year = this.getLabelForValue(value);
+                                    const currentYear = parseInt(document.getElementById('investment_year').value);
+                                    const currentAge = parseInt(document.getElementById('current_age').value);
+                                    const age = currentAge + (year - currentYear);
+                                    return `${year}\n(${age})`;
+                                },
+                                font: {
+                                    size: 12,
+                                    weight: '600',
+                                    family: 'Inter, system-ui, sans-serif'
+                                },
+                                maxRotation: 0,
+                                maxTicksLimit: 10
                             }
                         }
                     },
                     plugins: {
                         tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            titleFont: {
+                                size: 15,
+                                weight: '700',
+                                family: 'Inter, system-ui, sans-serif'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                weight: '600',
+                                family: 'Inter, system-ui, sans-serif'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 10,
+                                left: 12,
+                                right: 12
+                            },
+                            filter: function(tooltipItem) {
+                                // Only show tooltip for datasets with actual data
+                                return tooltipItem.parsed.y !== null && tooltipItem.parsed.y !== undefined;
+                            },
                             callbacks: {
                                 title: function(context) {
-                                    return 'Year: ' + context[0].label;
+                                    if (!context.length) return '';
+                                    const year = context[0].label;
+                                    const currentYear = parseInt(document.getElementById('investment_year').value) || 2025;
+                                    const currentAge = parseInt(document.getElementById('current_age').value) || 28;
+                                    const age = currentAge + (parseInt(year) - currentYear);
+                                    return `Year ${year} (Age ${age})`;
                                 },
                                 label: function(context) {
-                                    return context.dataset.label + ': ₹ ' + context.parsed.y.toLocaleString('en-IN');
+                                    if (context.parsed.y === null || context.parsed.y === undefined) return null;
+                                    const value = context.parsed.y;
+                                    return `${context.dataset.label}: ₹${value.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                 }
                             }
                         },
                         legend: {
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: '600',
+                                    family: 'Inter, system-ui, sans-serif'
+                                },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
                         }
                     }
                 }
             });
+            console.log('Chart initialized successfully:', chart);
+            } catch (error) {
+                console.error('Error initializing chart:', error);
+                document.getElementById('chartError').style.display = 'block';
+                document.getElementById('investmentChart').style.display = 'none';
+            }
         }
         
-        // Update chart with new data including phases
+        // Update chart with new multi-investment data
         function updateChart(data) {
-            const { years, amounts, phases, retirement_corpus, retirement_year, message } = data;
+            const { years, phases, investment_data, total_investment_data, retirement_data, investment_summaries, 
+                    retirement_corpus, calculated_total_corpus, corpus_source, retirement_year, retirement_age, message } = data;
             
             // Clear all datasets
-            chart.data.datasets[0].data = [];
-            chart.data.datasets[1].data = [];
-            chart.data.datasets[2].data = [];
+            chart.data.datasets = [];
             
-            // Populate data based on phases
-            const investmentData = [];
-            const retirementData = [];
-            const depletedData = [];
+            // Color palette for different investment models
+            const colors = [
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', 
+                '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6366f1'
+            ];
             
-            for (let i = 0; i < years.length; i++) {
-                const point = { x: years[i], y: amounts[i] };
-                
-                if (phases[i] === 'investment') {
-                    investmentData.push(point);
-                } else if (phases[i] === 'retirement') {
-                    retirementData.push(point);
-                } else if (phases[i] === 'depleted') {
-                    depletedData.push(point);
+            let depletionYear = null;
+            
+            // Create datasets for individual investment models
+            investment_summaries.forEach((summary, index) => {
+                const modelData = investment_data[summary.id];
+                if (modelData) {
+                    const color = colors[index % colors.length];
+                    const points = [];
+                    
+                    for (let i = 0; i < years.length; i++) {
+                        if (modelData[i] !== null && modelData[i] !== undefined) {
+                            points.push({ x: years[i], y: modelData[i] });
+                        }
+                    }
+                    
+                    chart.data.datasets.push({
+                        label: `${summary.name} (${summary.model_type.toUpperCase()})`,
+                        data: points,
+                        borderColor: color,
+                        backgroundColor: color + '20', // Add transparency
+                        tension: 0.1,
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        borderWidth: 2
+                    });
                 }
+            });
+            
+            // Add total investment dataset (bold line)
+            if (total_investment_data.some(val => val !== null)) {
+                const totalPoints = [];
+                for (let i = 0; i < years.length; i++) {
+                    if (total_investment_data[i] !== null && total_investment_data[i] !== undefined) {
+                        totalPoints.push({ x: years[i], y: total_investment_data[i] });
+                    }
+                }
+                
+                chart.data.datasets.push({
+                    label: 'Total Investment',
+                    data: totalPoints,
+                    borderColor: '#1f2937',
+                    backgroundColor: 'rgba(31, 41, 55, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    borderWidth: 4
+                });
+            }
+            
+            // Add retirement phase dataset
+            if (retirement_data.some(val => val !== null)) {
+                const retirementPoints = [];
+                for (let i = 0; i < years.length; i++) {
+                    if (retirement_data[i] !== null && retirement_data[i] !== undefined) {
+                        retirementPoints.push({ x: years[i], y: retirement_data[i] });
+                        
+                        // Check for depletion
+                        if (retirement_data[i] === 0 && depletionYear === null) {
+                            depletionYear = years[i];
+                        }
+                    }
+                }
+                
+                chart.data.datasets.push({
+                    label: 'Retirement Phase',
+                    data: retirementPoints,
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    tension: 0.1,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    borderWidth: 3
+                });
             }
             
             chart.data.labels = years;
-            chart.data.datasets[0].data = investmentData;
-            chart.data.datasets[1].data = retirementData;
-            chart.data.datasets[2].data = depletedData;
             chart.update();
             
-            // Update display elements
-            document.getElementById('retirement_corpus').textContent = '₹ ' + retirement_corpus.toLocaleString('en-IN');
+            // Update display elements - use manual value if in edit mode, otherwise use calculated
+            const corpusInput = document.getElementById('retirement_corpus_manual');
+            const displayCorpus = (!corpusInput.readOnly && parseFloat(corpusInput.value) > 0) 
+                ? parseFloat(corpusInput.value) 
+                : retirement_corpus;
+            document.getElementById('retirement_corpus').textContent = '₹ ' + displayCorpus.toLocaleString('en-IN');
             document.getElementById('retirement_year_display').textContent = retirement_year;
+            document.getElementById('retirement_age_info').textContent = retirement_age;
             
-            // Show status message
+            // Update calculation info elements
+            const currentYear = parseInt(document.getElementById('investment_year').value);
+            const currentAge = parseInt(document.getElementById('current_age').value);
+            const yearsUntilRetirement = retirement_age - currentAge;
+            
+            document.getElementById('current_year_info').textContent = currentYear;
+            document.getElementById('years_until_retirement').textContent = yearsUntilRetirement;
+            
+            // Update retirement corpus input field with calculated value if not in manual mode
+            updateRetirementCorpusDisplay(calculated_total_corpus, corpus_source === 'manual');
+            
+            // Enhanced status message with corpus depletion warning
             const statusElement = document.getElementById('status_message');
-            statusElement.textContent = message;
-            statusElement.className = 'status-message success';
+            if (depletionYear) {
+                const currentYear = parseInt(document.getElementById('investment_year').value);
+                const currentAge = parseInt(document.getElementById('current_age').value);
+                const depletionAge = currentAge + (depletionYear - currentYear);
+                const lastGoodYear = depletionYear - 1;
+                const lastGoodAge = depletionAge - 1;
+                
+                statusElement.textContent = `⚠️ ${message} - Money will last until end of ${lastGoodYear} (age ${lastGoodAge}). No funds available from ${depletionYear} onwards!`;
+                statusElement.className = 'status-message error';
+            } else {
+                statusElement.textContent = `✅ ${message}`;
+                statusElement.className = 'status-message success';
+            }
         }
         
         // Show error message
         function showError(errorMessage) {
+            console.log('🚨 showError called with:', errorMessage);
             const statusElement = document.getElementById('status_message');
             statusElement.textContent = 'Error: ' + errorMessage;
             statusElement.className = 'status-message error';
+            console.log('🚨 Error message set, element classes:', statusElement.className);
         }
         
         // Calculate and update chart
         async function calculateAndUpdate() {
+            console.log('calculateAndUpdate called, investment models count:', investmentModels.size);
+            
+            // Check if we have any investment models
+            if (investmentModels.size === 0) {
+                showError('Please add at least one investment model.');
+                return;
+            }
+            
+            // Collect investment models data
+            const investment_models_array = [];
+            for (const [id, model] of investmentModels) {
+                investment_models_array.push({
+                    id: id,
+                    name: model.name,
+                    base_amount: model.base_amount,
+                    recurring_amount: model.recurring_amount,
+                    step_up_rate: model.step_up_rate,
+                    avg_growth_rate: model.avg_growth_rate,
+                    investment_model: model.investment_model
+                });
+            }
+            
             const formData = {
                 // Investment parameters
-                base_amount: parseFloat(document.getElementById('base_amount').value),
-                recurring_amount: parseFloat(document.getElementById('recurring_amount').value),
-                step_up_rate: parseFloat(document.getElementById('step_up_rate').value),
-                avg_growth_rate: parseFloat(document.getElementById('avg_growth_rate').value),
                 investment_year: parseInt(document.getElementById('investment_year').value),
-                compounding_type: document.getElementById('compounding_type').value,
-                investment_type: document.getElementById('investment_type').value,
+                investment_models: investment_models_array,
                 
-                // Retirement parameters
-                retirement_year: parseInt(document.getElementById('retirement_year').value),
+                // Retirement parameters  
                 current_age: parseInt(document.getElementById('current_age').value),
+                retirement_age: parseInt(document.getElementById('retirement_age').value),
                 expected_life_span: parseInt(document.getElementById('expected_life_span').value),
+                retirement_corpus_manual: getRetirementCorpusValue(),
                 inflation_rate: parseFloat(document.getElementById('inflation_rate').value),
                 post_retirement_return_rate: parseFloat(document.getElementById('post_retirement_return_rate').value),
                 yearly_withdrawal: parseFloat(document.getElementById('yearly_withdrawal').value),
@@ -275,8 +770,25 @@
             };
             
             // Basic client-side validation
-            if (formData.retirement_year <= formData.investment_year) {
-                showError('Retirement year must be after investment start year');
+            const retirementYear = formData.investment_year + (formData.retirement_age - formData.current_age);
+            if (retirementYear < formData.investment_year) {
+                showError('Retirement age must allow for future retirement (retirement year would be ' + retirementYear + ')');
+                return;
+            }
+            
+            if (formData.retirement_age <= formData.current_age) {
+                showError('Retirement age (' + formData.retirement_age + ') must be greater than current age (' + formData.current_age + ')');
+                return;
+            }
+            
+            if (formData.retirement_age >= formData.expected_life_span) {
+                console.log('🚨 Client validation failed: retirement_age >= expected_life_span', formData.retirement_age, '>=', formData.expected_life_span);
+                showError('Retirement age (' + formData.retirement_age + ') must be less than expected life span (' + formData.expected_life_span + ')');
+                return;
+            }
+            
+            if (formData.expected_life_span <= formData.retirement_age + 2) {
+                showError('Expected life span (' + formData.expected_life_span + ') should be at least 3 years more than retirement age (' + formData.retirement_age + ')');
                 return;
             }
             
@@ -291,7 +803,19 @@
                 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    showError(errorData.detail || 'Calculation failed');
+                    console.log('API Error Response:', errorData);
+                    
+                    // Handle both FastAPI HTTPException format and Pydantic validation error format
+                    let errorMessage = 'Calculation failed';
+                    if (typeof errorData.detail === 'string') {
+                        // FastAPI HTTPException format
+                        errorMessage = errorData.detail;
+                    } else if (Array.isArray(errorData.detail)) {
+                        // Pydantic validation error format
+                        errorMessage = errorData.detail.map(err => err.msg).join('; ');
+                    }
+                    
+                    showError(errorMessage);
                     return;
                 }
                 
@@ -329,47 +853,183 @@
             document.getElementById('post_return_display').textContent = parseFloat(returnRate).toFixed(1);
         }
         
-        function updateRetirementYearDisplay() {
-            const retirementYear = document.getElementById('retirement_year').value;
-            document.getElementById('retirement_year_display').textContent = retirementYear;
+        function updateCurrentAgeDisplay() {
+            const currentAge = parseInt(document.getElementById('current_age').value);
+            document.getElementById('current_age_display').textContent = currentAge;
+            
+            // Update the help text reference
+            document.getElementById('current_year_age_ref').textContent = currentAge;
+            
+            // Dynamically update retirement age minimum to be current age + 1
+            const retirementAgeSlider = document.getElementById('retirement_age');
+            const minRetirementAge = Math.max(45, currentAge + 1);
+            retirementAgeSlider.min = minRetirementAge;
+            
+            // If current retirement age is too low, adjust it
+            if (parseInt(retirementAgeSlider.value) <= currentAge) {
+                retirementAgeSlider.value = minRetirementAge;
+                updateRetirementAgeDisplay();
+            }
         }
+        
+        function updateRetirementAgeDisplay() {
+            const retirementAge = parseInt(document.getElementById('retirement_age').value);
+            document.getElementById('retirement_age_display').textContent = retirementAge;
+            
+            // Also update the info display
+            document.getElementById('retirement_age_info').textContent = retirementAge;
+            
+            // Dynamically update life span minimum to be retirement age + 5
+            const lifeSpanSlider = document.getElementById('expected_life_span');
+            const minLifeSpan = Math.max(60, retirementAge + 5);
+            lifeSpanSlider.min = minLifeSpan;
+            
+            // If current life span is too low, adjust it
+            if (parseInt(lifeSpanSlider.value) < retirementAge + 5) {
+                lifeSpanSlider.value = minLifeSpan;
+                updateExpectedLifeSpanDisplay();
+            }
+        }
+        
+        function updateExpectedLifeSpanDisplay() {
+            const lifeSpan = document.getElementById('expected_life_span').value;
+            document.getElementById('expected_life_span_display').textContent = lifeSpan;
+        }
+        
+        // Retirement corpus management functions
+        function getRetirementCorpusValue() {
+            const input = document.getElementById('retirement_corpus_manual');
+            const isEditable = !input.readOnly;
+            return isEditable && parseFloat(input.value) > 0 ? parseFloat(input.value) : null;
+        }
+        
+        function toggleCorpusEdit() {
+            const input = document.getElementById('retirement_corpus_manual');
+            const btn = document.getElementById('edit_corpus_btn');
+            const helpText = input.nextElementSibling.nextElementSibling;
+            
+            if (input.readOnly) {
+                // Enable editing
+                input.readOnly = false;
+                input.focus();
+                input.select();
+                btn.textContent = 'Auto';
+                btn.classList.add('active');
+                helpText.textContent = 'Manual override active. Click "Auto" to use calculated value.';
+            } else {
+                // Disable editing (return to auto-calculation)
+                input.readOnly = true;
+                btn.textContent = 'Edit';
+                btn.classList.remove('active');
+                helpText.textContent = 'Auto-calculated from investment parameters. Click "Edit" to customize.';
+                
+                // Trigger recalculation to update with auto value
+                calculateAndUpdate();
+            }
+        }
+        
+        function updateRetirementCorpusDisplay(calculatedCorpus, isManual) {
+            const input = document.getElementById('retirement_corpus_manual');
+            if (!isManual || input.readOnly) {
+                // Update with calculated value when not in manual mode
+                input.value = Math.round(calculatedCorpus);
+            }
+        }
+        
+        // [REMOVED DUPLICATE FUNCTION - using the multi-model version instead]
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            initChart();
-            calculateAndUpdate();
+            console.log('🚀 DOM Content Loaded - Starting initialization');
             
-            // Add event listeners to all form inputs
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
+            // Check Chart.js availability
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not loaded!');
+                document.getElementById('chartError').style.display = 'block';
+                document.getElementById('chartError').innerHTML = '⚠️ Chart library failed to load. Please check your internet connection and refresh.';
+                return;
+            }
+            
+            // Initialize chart first
+            initChart();
+            console.log('✅ Chart initialized');
+            
+            // Setup Add Investment Button FIRST before adding any models
+            setupAddInvestmentButton();
+            console.log('✅ Add button setup complete');
+            
+            // Initialize with one default investment model (skip initial calculation)
+            addInvestmentModel(null, true);
+            console.log('✅ Default investment model added');
+            
+            // Add event listeners to retirement and display parameter inputs
+            const retirementInputs = document.querySelectorAll('input[id="current_age"], input[id="retirement_age"], input[id="expected_life_span"], input[id="retirement_corpus_manual"], input[id="yearly_withdrawal"], input[id="inflation_rate"], input[id="post_retirement_return_rate"], input[id="years_to_display"], input[id="investment_year"]');
+            retirementInputs.forEach(input => {
                 input.addEventListener('input', () => {
                     // Update slider displays
                     if (input.id === 'years_to_display') {
                         updateYearsDisplay();
-                    } else if (input.id === 'step_up_rate') {
-                        updateStepUpDisplay();
-                    } else if (input.id === 'avg_growth_rate') {
-                        updateGrowthRateDisplay();
                     } else if (input.id === 'inflation_rate') {
                         updateInflationDisplay();
                     } else if (input.id === 'post_retirement_return_rate') {
                         updatePostReturnDisplay();
-                    } else if (input.id === 'retirement_year') {
-                        updateRetirementYearDisplay();
+                    } else if (input.id === 'current_age') {
+                        updateCurrentAgeDisplay();
+                    } else if (input.id === 'retirement_age') {
+                        updateRetirementAgeDisplay();
+                    } else if (input.id === 'expected_life_span') {
+                        updateExpectedLifeSpanDisplay();
                     }
                     
-                    // Recalculate
-                    calculateAndUpdate();
+                    // Recalculate (skip for retirement_corpus_manual when readonly)
+                    if (input.id !== 'retirement_corpus_manual' || !input.readOnly) {
+                        calculateAndUpdate();
+                    }
                 });
+                
+                // Also add 'change' event listener for manual corpus input when not readonly
+                if (input.id === 'retirement_corpus_manual') {
+                    input.addEventListener('change', () => {
+                        if (!input.readOnly) {
+                            console.log('Manual corpus changed, updating display immediately...');
+                            // Update display immediately
+                            const manualValue = parseFloat(input.value);
+                            if (manualValue > 0) {
+                                document.getElementById('retirement_corpus').textContent = '₹ ' + manualValue.toLocaleString('en-IN');
+                            }
+                            // Also trigger calculation for chart update
+                            setTimeout(() => calculateAndUpdate(), 100);
+                        }
+                    });
+                    
+                    // Also add blur event for immediate response
+                    input.addEventListener('blur', () => {
+                        if (!input.readOnly) {
+                            console.log('Manual corpus blur, updating display immediately...');
+                            const manualValue = parseFloat(input.value);
+                            if (manualValue > 0) {
+                                document.getElementById('retirement_corpus').textContent = '₹ ' + manualValue.toLocaleString('en-IN');
+                            }
+                        }
+                    });
+                }
             });
+            
+            // Add event listener for the edit corpus button
+            document.getElementById('edit_corpus_btn').addEventListener('click', toggleCorpusEdit);
             
             // Initial display updates
             updateYearsDisplay();
-            updateStepUpDisplay();
-            updateGrowthRateDisplay();
             updateInflationDisplay();
             updatePostReturnDisplay();
-            updateRetirementYearDisplay();
+            updateCurrentAgeDisplay();
+            updateRetirementAgeDisplay();
+            updateExpectedLifeSpanDisplay();
+            
+            // Trigger initial calculation after everything is set up
+            setTimeout(() => {
+                calculateAndUpdate();
+            }, 200);
         });
     </script>
 </body>

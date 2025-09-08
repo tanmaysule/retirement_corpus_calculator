@@ -70,3 +70,8 @@ node_modules/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
