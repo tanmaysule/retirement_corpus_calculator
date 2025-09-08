@@ -1,5 +1,7 @@
 # 🏦 Retirement Corpus Calculator
 
+<img width="1422" height="803" alt="image" src="https://github.com/user-attachments/assets/30fdac9c-e24a-43d9-b134-2237e584eef5" />
+
 A sophisticated, multi-investment retirement planning platform with comprehensive testing, real-time visualizations, and professional-grade financial modeling capabilities.
 
 ![Python](https://img.shields.io/badge/python-3.13-blue.svg)
