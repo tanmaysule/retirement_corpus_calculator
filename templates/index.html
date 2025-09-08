@@ -462,8 +462,8 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         interaction: {
-                            intersect: true,   // Require intersection with actual line
-                            mode: 'point'      // Show only the specific point being hovered
+                            intersect: false,   // Allow hover near the line, not just on exact points
+                            mode: 'nearest'     // Show tooltip for nearest data point
                         },
                     scales: {
                         y: {
@@ -578,6 +578,10 @@
                     }
                 }
             });
+            
+            // Make chart globally accessible for tooltip debugging and external access
+            window.chart = chart;
+            
             console.log('Chart initialized successfully:', chart);
             } catch (error) {
                 console.error('Error initializing chart:', error);
@@ -623,7 +627,7 @@
                         tension: 0.1,
                         fill: false,
                         pointRadius: 0,
-                        pointHoverRadius: 4,
+                        pointHoverRadius: 8,
                         borderWidth: 2
                     });
                 }
@@ -646,7 +650,7 @@
                     tension: 0.1,
                     fill: true,
                     pointRadius: 0,
-                    pointHoverRadius: 5,
+                    pointHoverRadius: 8,
                     borderWidth: 4
                 });
             }
@@ -673,7 +677,7 @@
                     tension: 0.1,
                     fill: false,
                     pointRadius: 0,
-                    pointHoverRadius: 5,
+                    pointHoverRadius: 8,
                     borderWidth: 3
                 });
             }
