@@ -7,8 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/calculations.js"></script>
 </head>
 <body>
     <div class="container">
@@ -150,7 +151,6 @@
             // Update help text after DOM is ready - with more debugging
             setTimeout(() => {
                 console.log(`🔄 Updating help text for model ${modelId} with type ${defaultData.investment_model}`);
-                console.log('DOM container innerHTML:', container.innerHTML);
                 updateInvestmentAmountHelp(modelId, defaultData.investment_model);
                 
                 // Double-check that the help text was set
@@ -427,8 +427,6 @@
             console.log('✅ Add Investment Button event handler attached');
             return true;
         }
-        
-        // Register the annotation plugin (Chart.js annotation plugin registers automatically)
         
         // Initialize chart with multiple datasets for different phases
         function initChart() {
@@ -731,7 +729,7 @@
             console.log('🚨 Error message set, element classes:', statusElement.className);
         }
         
-        // Calculate and update chart
+        // Calculate and update chart - MODIFIED to use local JavaScript calculations
         async function calculateAndUpdate() {
             console.log('calculateAndUpdate called, investment models count:', investmentModels.size);
             
@@ -797,37 +795,12 @@
             }
             
             try {
-                const response = await fetch('/calculate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.log('API Error Response:', errorData);
-                    
-                    // Handle both FastAPI HTTPException format and Pydantic validation error format
-                    let errorMessage = 'Calculation failed';
-                    if (typeof errorData.detail === 'string') {
-                        // FastAPI HTTPException format
-                        errorMessage = errorData.detail;
-                    } else if (Array.isArray(errorData.detail)) {
-                        // Pydantic validation error format
-                        errorMessage = errorData.detail.map(err => err.msg).join('; ');
-                    }
-                    
-                    showError(errorMessage);
-                    return;
-                }
-                
-                const data = await response.json();
+                // Use local JavaScript calculation instead of API call
+                const data = calculateRetirementJourney(formData);
                 updateChart(data);
             } catch (error) {
                 console.error('Error calculating retirement journey:', error);
-                showError('Network error: Unable to calculate. Please check your connection.');
+                showError(error.message || 'Calculation error occurred.');
             }
         }
         
@@ -835,16 +808,6 @@
         function updateYearsDisplay() {
             const years = document.getElementById('years_to_display').value;
             document.getElementById('years_display').textContent = years;
-        }
-        
-        function updateStepUpDisplay() {
-            const stepUpRate = document.getElementById('step_up_rate').value;
-            document.getElementById('step_up_display').textContent = parseFloat(stepUpRate).toFixed(1);
-        }
-        
-        function updateGrowthRateDisplay() {
-            const growthRate = document.getElementById('avg_growth_rate').value;
-            document.getElementById('growth_rate_display').textContent = parseFloat(growthRate).toFixed(1);
         }
         
         function updateInflationDisplay() {
@@ -940,8 +903,6 @@
             }
         }
         
-        // [REMOVED DUPLICATE FUNCTION - using the multi-model version instead]
-        
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 DOM Content Loaded - Starting initialization');
@@ -951,6 +912,14 @@
                 console.error('Chart.js not loaded!');
                 document.getElementById('chartError').style.display = 'block';
                 document.getElementById('chartError').innerHTML = '⚠️ Chart library failed to load. Please check your internet connection and refresh.';
+                return;
+            }
+            
+            // Check if calculations.js is loaded
+            if (typeof calculateRetirementJourney === 'undefined') {
+                console.error('Calculations module not loaded!');
+                document.getElementById('chartError').style.display = 'block';
+                document.getElementById('chartError').innerHTML = '⚠️ Calculation library failed to load. Please refresh the page.';
                 return;
             }
             

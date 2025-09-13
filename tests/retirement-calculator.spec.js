@@ -395,22 +395,19 @@ test.describe('Retirement Corpus Calculator', () => {
     await expect(addButton).toBeDisabled();
   });
 
-  test('should handle API errors gracefully', async ({ page }) => {
-    // Create an invalid scenario by directly setting slider values and bypassing constraint logic
+  test('should handle calculation errors gracefully', async ({ page }) => {
+    // Create an invalid scenario that will cause calculation errors
     await page.evaluate(() => {
-      // Disable constraint logic temporarily
-      const originalUpdateRetirementAgeDisplay = window.updateRetirementAgeDisplay;
-      window.updateRetirementAgeDisplay = () => {};
-      
-      // Set invalid values directly
+      // Set invalid values that will trigger JavaScript validation errors
       document.getElementById('retirement_age').value = '70';
-      document.getElementById('expected_life_span').value = '65';
+      document.getElementById('expected_life_span').value = '65'; // Less than retirement age
       
-      // Remove dynamic constraints
-      document.getElementById('expected_life_span').min = '18';
-      document.getElementById('expected_life_span').max = '100';
+      // Remove HTML5 constraints to allow invalid values
+      const lifespanInput = document.getElementById('expected_life_span');
+      lifespanInput.min = '18';
+      lifespanInput.max = '120';
       
-      // Manually trigger calculation
+      // Manually trigger calculation with invalid data
       if (window.calculateAndUpdate) {
         window.calculateAndUpdate();
       }
@@ -419,10 +416,11 @@ test.describe('Retirement Corpus Calculator', () => {
     // Wait for calculation attempt
     await page.waitForTimeout(3000);
     
-    // Should show error message
+    // Should show error message from JavaScript validation
     const statusMessage = page.locator('#status_message');
     await expect(statusMessage).toBeVisible();
     await expect(statusMessage).toHaveClass(/error/);
+    await expect(statusMessage).toContainText('Error:');
   });
 
   test('should preserve data when adding/removing models', async ({ page }) => {
