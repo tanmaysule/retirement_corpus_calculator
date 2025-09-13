@@ -1,5 +1,6 @@
 # 🏦 Retirement Corpus Calculator
 
+<img width="1467" height="785" alt="image" src="https://github.com/user-attachments/assets/35f3f114-235a-4a7a-9300-c78b2e7e8acb" />
 <img width="1422" height="803" alt="image" src="https://github.com/user-attachments/assets/30fdac9c-e24a-43d9-b134-2237e584eef5" />
 
 A sophisticated, multi-investment retirement planning platform with comprehensive testing, real-time visualizations, and professional-grade financial modeling capabilities.
