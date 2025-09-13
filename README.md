@@ -3,11 +3,14 @@
 <img width="1467" height="785" alt="image" src="https://github.com/user-attachments/assets/35f3f114-235a-4a7a-9300-c78b2e7e8acb" />
 <img width="1422" height="803" alt="image" src="https://github.com/user-attachments/assets/30fdac9c-e24a-43d9-b134-2237e584eef5" />
 
-A sophisticated, multi-investment retirement planning platform with comprehensive testing, real-time visualizations, and professional-grade financial modeling capabilities.
+A sophisticated, multi-investment retirement planning platform with comprehensive testing, real-time visualizations, and professional-grade financial modeling capabilities. **Now available as a live web application!**
 
-![Python](https://img.shields.io/badge/python-3.13-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-green.svg)
+🌐 **[Live Demo: https://tanmaysule.github.io/retirement_corpus_calculator/](https://tanmaysule.github.io/retirement_corpus_calculator/)**
+
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26.svg)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.4.0-ff6384.svg)
+![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen.svg)
 ![Playwright](https://img.shields.io/badge/Playwright-16_Tests-2eaa4f.svg)
 ![Tests](https://img.shields.io/badge/Tests-100%25_Pass-brightgreen.svg)
 ![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
@@ -48,15 +51,24 @@ A sophisticated, multi-investment retirement planning platform with comprehensiv
 - **Responsive Design**: Perfect functionality on desktop, tablet, and mobile devices
 - **No Login Required**: Instant access - just open and start planning your retirement
 - **Fast Performance**: Optimized calculations and rendering for smooth user experience
-- **Modern Stack**: Built with FastAPI, Pydantic, Chart.js, and comprehensive Playwright testing
+- **Modern Stack**: Built with vanilla JavaScript, HTML5, Chart.js, and comprehensive Playwright testing
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Python 3.10 or higher (tested with Python 3.13.7)
-- Git
+### 🌐 **Instant Access - No Installation Required!**
 
-### Installation
+**Option 1: Use the Live Web Application**
+1. **Visit the live site:** [https://tanmaysule.github.io/retirement_corpus_calculator/](https://tanmaysule.github.io/retirement_corpus_calculator/)
+2. **Start planning:** All features work directly in your browser
+3. **No setup needed:** Begin retirement planning immediately!
+
+### 💻 **Local Development Setup**
+
+**Prerequisites**
+- Any modern web browser (Chrome, Firefox, Safari, Edge)
+- Local web server (optional, for development)
+
+**Option 2: Run Locally**
 
 1. **Clone the repository**
    ```bash
@@ -64,37 +76,31 @@ A sophisticated, multi-investment retirement planning platform with comprehensiv
    cd retirement_corpus_calculator
    ```
 
-2. **Create and activate virtual environment**
-   ```bash
-   # Create virtual environment
-   python3 -m venv venv
+2. **Serve the files** (choose one method):
    
-   # Activate it (macOS/Linux)
-   source venv/bin/activate
+   **Simple Python server:**
+   ```bash
+   python3 -m http.server 8000
+   # Then open: http://localhost:8000
+   ```
    
-   # On Windows
-   # venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
+   **Node.js server:**
    ```bash
-   pip install -r requirements.txt
+   npx serve .
+   # Follow the provided URL
    ```
-
-4. **Run the application**
+   
+   **Or just open directly:**
    ```bash
-   python app.py
-   ```
-
-5. **Open in browser**
-   ```
-   http://localhost:8000
+   # Open index.html directly in your browser
+   open index.html  # macOS
+   # or double-click index.html in file explorer
    ```
 
 ## 🎯 Usage
 
 ### 💡 **Getting Started**
-1. **Launch**: Open the application at `http://localhost:8000`
+1. **Launch**: Visit [https://tanmaysule.github.io/retirement_corpus_calculator/](https://tanmaysule.github.io/retirement_corpus_calculator/) or run locally
 2. **Default Model**: Start with one pre-configured investment model
 3. **Customize**: Adjust parameters using interactive sliders and inputs
 4. **Visualize**: Watch real-time updates on the comprehensive retirement journey chart
@@ -141,16 +147,13 @@ A sophisticated, multi-investment retirement planning platform with comprehensiv
 ```
 retirement_corpus_calculator/
 │
-├── app.py                      # FastAPI web server
-├── recurring_investment.py     # Core investment calculation logic
-├── retirement_withdrawal.py    # Retirement phase calculations
-├── requirements.txt            # Python dependencies
-├── package.json                # Node.js dependencies for testing
-├── playwright.config.js        # Playwright test configuration
-├── templates/
-│   └── index.html             # Main web interface
+├── index.html                  # Main web interface
+├── js/
+│   └── calculations.js         # Investment & retirement calculation engine
 ├── static/
 │   └── style.css              # Styling and responsive design
+├── package.json                # Node.js dependencies for testing
+├── playwright.config.js        # Playwright test configuration
 ├── tests/
 │   └── retirement-calculator.spec.js  # End-to-end test suite
 ├── LICENSE                     # CC BY-NC 4.0 License
@@ -160,10 +163,10 @@ retirement_corpus_calculator/
 ## 🔧 Technical Details
 
 ### **🏗️ Architecture**
-- **Backend**: FastAPI with Pydantic validation and comprehensive error handling
 - **Frontend**: Vanilla HTML/CSS/JavaScript with enhanced Chart.js integration
+- **Calculations**: Pure JavaScript calculation engine with comprehensive financial modeling
 - **Testing**: Playwright end-to-end testing with 100% coverage across all browsers
-- **Data Models**: Type-safe Pydantic models for investment calculations and retirement planning
+- **Deployment**: Static site hosted on GitHub Pages for instant global access
 
 ### **💰 Financial Calculation Engine**
 - **Multi-Model Support**: Simultaneous processing of up to 10 different investment strategies
@@ -176,7 +179,7 @@ retirement_corpus_calculator/
 - **Dynamic Chart.js**: Multi-dataset line charts with individual model tracking
 - **Interactive Tooltips**: Hover functionality with detailed financial data
 - **Responsive Design**: Professional UI that works across all device sizes
-- **Real-time Validation**: Client-side and server-side validation with user-friendly feedback
+- **Real-time Validation**: Client-side validation with user-friendly feedback
 - **Smart Constraints**: Dynamic slider ranges that prevent invalid age relationships
 
 ### **🧪 Quality & Testing**
@@ -208,11 +211,16 @@ This project includes a comprehensive end-to-end test suite using [Playwright](h
 
 ### Running Tests
 
-**Prerequisites**: Make sure the FastAPI server is running on `localhost:8000` before running tests:
+**Prerequisites**: Make sure you have a local web server serving the application before running tests:
+
 ```bash
-# In one terminal, start the server
-source venv/bin/activate
-python app.py
+# Option 1: Simple Python server
+python3 -m http.server 8000
+
+# Option 2: Node.js server  
+npx serve . --port 8000
+
+# Option 3: Any other web server on port 8000
 ```
 
 Then in another terminal, run the tests:
@@ -258,7 +266,7 @@ Tests run **autonomously** and provide detailed results:
 - **Fast Execution**: Complete test suite runs in ~15-20 seconds
 - **Detailed Reports**: HTML reports with screenshots for any failures
 
-The tests automatically **validate both frontend and backend**, ensuring the entire application stack works correctly.
+The tests automatically **validate the complete frontend application**, ensuring all calculations, interactions, and user interface elements work correctly across different browsers.
 
 ## 🤝 Contributing
 
@@ -267,9 +275,9 @@ The tests automatically **validate both frontend and backend**, ensuring the ent
 3. Make your changes
 4. **Run the test suite** to ensure everything works:
    ```bash
-   # Start the server
-   source venv/bin/activate
-   python app.py &
+   # Start a local server (choose one)
+   python3 -m http.server 8000 &
+   # OR: npx serve . --port 8000 &
    
    # Run tests
    npm test
@@ -297,8 +305,30 @@ For commercial use, please contact the author.
 
 See the [LICENSE](LICENSE) file for full details or visit [Creative Commons](https://creativecommons.org/licenses/by-nc/4.0/).
 
+## 🚀 Deployment
+
+This application is deployed as a static website on **GitHub Pages**, making it instantly accessible worldwide without any server requirements.
+
+### **Live Site**
+- **URL**: [https://tanmaysule.github.io/retirement_corpus_calculator/](https://tanmaysule.github.io/retirement_corpus_calculator/)
+- **Hosting**: GitHub Pages (automatic deployment from main branch)
+- **Performance**: Fast global CDN delivery
+- **Uptime**: Backed by GitHub's infrastructure
+
+### **Deploying Your Own Version**
+
+1. **Fork this repository**
+2. **Enable GitHub Pages**:
+   - Go to Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: main / (root)
+3. **Access your deployment**: `https://yourusername.github.io/retirement_corpus_calculator/`
+
+The site will automatically update whenever you push changes to the main branch.
+
 ## 🙏 Acknowledgments
 
-- Built with [FastAPI](https://fastapi.tiangolo.com/)
 - Charts powered by [Chart.js](https://www.chartjs.org/)
-- Modern responsive design
+- Testing framework: [Playwright](https://playwright.dev/)
+- Hosted on [GitHub Pages](https://pages.github.com/)
+- Modern responsive design with vanilla JavaScript
